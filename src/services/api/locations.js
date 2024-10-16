@@ -89,3 +89,48 @@ export async function destroy(id) {
         },
     });
 }
+
+export async function getManyByCoordinates(params) {
+    const minLat = parseFloat(params.minLat);
+    const maxLat = parseFloat(params.maxLat);
+    const minLong = parseFloat(params.minLong);
+    const maxLong = parseFloat(params.maxLong);
+
+    console.log(minLat, maxLat, minLong, maxLong);
+
+    if (!minLat || !maxLat || !minLong || !maxLong) {
+        throw new Error("Invalid Coordinates");
+    }
+
+    if (minLat > maxLat) {
+        throw new Error("min latitude cannot be greater than max latitude");
+    }
+
+    if (minLong > maxLong) {
+        throw new Error("min longitude cannot be greater than max longitude");
+    }
+
+    if (maxLat > 90 || maxLat < -90 || minLat > 90 || minLat < -90) {
+        throw new Error("Latitude must be between -90 and 90");
+    }
+
+    if (maxLong > 180 || maxLong < -180 || minLong > 180 || minLong < -180) {
+        throw new Error("Longitude must be between -180 and 180");
+    }
+
+    const data = await prisma.location.findMany({
+        where: {
+            latitude: {
+                gte: minLat,
+                lte: maxLat,
+            },
+            longitude: {
+                gte: minLong,
+                lte: maxLong,
+            },
+        },
+    });
+    return {
+        data
+    };
+}
