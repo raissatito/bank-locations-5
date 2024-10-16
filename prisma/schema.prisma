@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -18,4 +19,9 @@ model Location {
   longitude    Float
   type         String
   category     String
+
+  @@index([location_name])
+  @@index([address])
+  @@index([province])
+  @@index([city])
 }
