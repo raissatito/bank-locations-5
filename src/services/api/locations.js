@@ -58,26 +58,34 @@ export async function getAll(params) {
     }
 }
 
+export async function getByID(id) {
+    if (typeof id !== "number") {
+        throw new Error("Invalid ID");
+    }
 
-
-export async function getByID() {
-    // TODO
-    
+    return await prisma.location.findUnique({
+        where: {
+            id: id,
+        },
+    });
 }
-
 
 export async function create() {
     // TODO
-    
 }
 
 export async function update() {
     // TODO
-    
 }
 
-export async function destroy() {
-    // TODO
-    
-}
+export async function destroy(id) {
+    if (typeof id !== "number") {
+        throw new Error("Invalid ID");
+    }
 
+    return await prisma.location.delete({
+        where: {
+            id: id,
+        },
+    });
+}
