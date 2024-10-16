@@ -4,12 +4,18 @@ export default async function handler(req, res) {
 
   if (req.method == 'GET') {
     const params = req.query;
-    const data = await getAll(params);
-    
+    let data;
+    try {
+       data = await getAll(params);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({error: true, message: error.message})  
+    }
+
     if (!data) {
       res.status(500).json({error: true})  
     }
-    res.status(200).json({ locations: data });  
+    res.status(200).json(data);  
   }
 
   if (req.method == 'POST') {
