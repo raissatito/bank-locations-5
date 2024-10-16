@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -10,18 +10,25 @@ datasource db {
 }
 
 model Location {
-  id          Int      @id @default(autoincrement())
+  id            Int    @id @default(autoincrement())
   location_name String
-  address      String
-  province     String
-  city         String
-  latitude     Float
-  longitude    Float
-  type         String
-  category     String
+  address       String
+  province      String
+  city          String
+  latitude      Float
+  longitude     Float
+  type          String
+  category      String
 
   @@index([location_name])
   @@index([address])
   @@index([province])
   @@index([city])
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  fullName String
 }
