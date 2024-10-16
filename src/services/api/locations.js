@@ -38,12 +38,12 @@ export async function getAll(params) {
 
     if (params.page) {
         query.skip =
-            (parseInt(params.page) - 1) *
-            (params.size ? parseInt(params.size) : 10);
+            (parseInt(params.page) - 1) * (params.size ? parseInt(params.size) : 10);
     }
 
     if (params.sort && params.sort !== "relevance") {
-        query.orderBy.push({ [params.sort]: "asc" });
+        query.orderBy.push({
+            [params.sort]: "asc" });
     }
 
     const data = await prisma.location.findMany(query);
@@ -72,8 +72,35 @@ export async function getByID(id) {
     });
 }
 
-export async function create() {
-    // TODO
+// export async function create() {
+//     // TODO
+// }
+
+export async function create(data) {
+    if (!data.location_name ||
+        !data.address ||
+        !data.province ||
+        !data.city ||
+        !data.latitude ||
+        !data.longitude ||
+        !data.type ||
+        !data.category
+    ) {
+        throw new Error("Missing required fields");
+    }
+
+    return await prisma.location.create({
+        data: {
+            location_name: data.location_name,
+            address: data.address,
+            province: data.province,
+            city: data.city,
+            latitude: parseFloat(data.latitude),
+            longitude: parseFloat(data.longitude),
+            type: data.type,
+            category: data.category,
+        },
+    });
 }
 
 export async function update(
@@ -85,7 +112,7 @@ export async function update(
     latitude,
     longitude,
     type,
-    category
+    category,
 ) {
     // assert type
     assert.equal(typeof location_name, "string");
@@ -172,6 +199,6 @@ export async function getManyByCoordinates(params) {
         },
     });
     return {
-        data
+        data,
     };
 }
