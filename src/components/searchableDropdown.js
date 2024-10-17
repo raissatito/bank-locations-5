@@ -1,34 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { on } from 'events';
 
-const SearchableDropdown = ({kind, data}) => {
+const SearchableDropdown = ({kind, data, onSelected}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedItem, setSelectedItem] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
   
     // Function to filter items based on the search term
-    const filteredItems = items.filter((item) =>
+    let filteredItems = data.filter((item) =>
       item.toLowerCase().includes(searchTerm.toLowerCase())
     );
   
     // Function to handle input focus (open the dropdown)
     const handleFocus = () => {
       setIsOpen(true);
-      console.log(selectedItem)
     };
   
     // Function to handle input blur (close the dropdown after a small delay)
     const handleBlur = () => {
       // Delay hiding to allow selecting options
       setTimeout(() => setIsOpen(false), 100);
+      filteredItems = data
+      setSearchTerm('')
     };
 
     const handleSelection = (item) => {
       setSelectedItem(item);
-      setSearchTerm(item);
+      onSelected(item)
     };
-  
+
     return (
       <div onFocus={handleFocus}>
         <div className="flex flex-row justify-between items-center py-2 px-4">
@@ -36,8 +37,8 @@ const SearchableDropdown = ({kind, data}) => {
             type="text"
             placeholder={kind}
             className="w-full bg-zinc-100 text-black outline-none"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm !== '' ? searchTerm : selectedItem}
+            onChange={(e) => {setSearchTerm(e.target.value)}}
             onBlur={handleBlur}
           />
           <span>
@@ -48,6 +49,9 @@ const SearchableDropdown = ({kind, data}) => {
         {isOpen && (
           <div className="absolute w-56 mt-1 bg-base-100 rounded-box shadow-lg z-10">
             <ul className="menu p-2">
+              <li>
+                  <a onClick={() => handleSelection("")}>----</a>
+              </li>
               {filteredItems.length > 0 ? (
                 filteredItems.map((item, index) => (
                   <li key={index} className="cursor-pointer">
@@ -56,7 +60,7 @@ const SearchableDropdown = ({kind, data}) => {
                 ))
               ) : (
                 <li>
-                  <a>No items found</a>
+                  <a>No Province found</a>
                 </li>
               )}
             </ul>
