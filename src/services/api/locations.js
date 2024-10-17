@@ -43,7 +43,8 @@ export async function getAll(params) {
 
     if (params.sort && params.sort !== "relevance") {
         query.orderBy.push({
-            [params.sort]: "asc" });
+            [params.sort]: "asc",
+        });
     }
 
     const data = await prisma.location.findMany(query);
@@ -88,7 +89,7 @@ export async function create(data) {
     ) {
         throw new Error("Missing required fields");
     }
-
+    //
     return await prisma.location.create({
         data: {
             location_name: data.location_name,
@@ -163,7 +164,6 @@ export async function getManyByCoordinates(params) {
     const maxLat = parseFloat(params.maxLat);
     const minLong = parseFloat(params.minLong);
     const maxLong = parseFloat(params.maxLong);
-
 
     if (!minLat || !maxLat || !minLong || !maxLong) {
         throw new Error("Invalid Coordinates");
