@@ -46,6 +46,30 @@ export async function getAll(params) {
             [params.sort]: "asc" });
     }
 
+    if (params.type && params.type !== "all") {
+        query.where.type = params.type;
+    }
+
+    if (!params.keyword && !params.province && !params.city ) {
+        let lat = params.lat;
+        let lng = params.long;
+        console.log(lat, lng);
+        let data =  await prisma.$queryRaw`
+                SELECT *,
+                        (
+                            abs(CAST("latitude" AS double precision) - CAST(${lat} AS double precision)) + 
+                            abs(CAST("longitude" AS double precision) - CAST(${lng} AS double precision))
+                        ) AS distance  
+                FROM "Location"
+                ORDER BY distance ASC
+                LIMIT 20;
+                `;
+
+        return {
+            data: data,
+        };
+    }
+
     const data = await prisma.location.findMany(query);
 
     const pagination = {
