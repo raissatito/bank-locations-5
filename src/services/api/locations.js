@@ -137,7 +137,6 @@ export async function getManyByCoordinates(params) {
     const minLong = parseFloat(params.minLong);
     const maxLong = parseFloat(params.maxLong);
 
-    console.log(minLat, maxLat, minLong, maxLong);
 
     if (!minLat || !maxLat || !minLong || !maxLong) {
         throw new Error("Invalid Coordinates");
