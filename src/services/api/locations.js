@@ -53,9 +53,11 @@ export async function getAll(params) {
             [params.sort]: "asc" });
     }
 
-    // if (params.type && params.type !== "all") {
-    //     query.where.type = params.type;
-    // }
+    if (!!params.types) {
+        query.where.type = {
+            in: params.types.split(","),
+        };
+    }
 
     if (!params.keyword && !params.province && !params.city ) {
         let lat = params.lat;
@@ -221,7 +223,11 @@ export async function getManyByCoordinates(params) {
         throw new Error("Longitude must be between -180 and 180");
     }
 
-    let query = {};
+    let query = {
+        where: {},
+        orderBy: [],
+    };
+    
     if (params.keyword) {
         query.where.OR = [
             { location_name: { search: keyword, mode: "insensitive" } },
@@ -230,10 +236,9 @@ export async function getManyByCoordinates(params) {
             { city: { search: keyword, mode: "insensitive" } },
         ];
     }
-
-    if (!!types) {
+    if (params.types) {
         query.where.type = {
-            in: types,
+            in: types?.split(","),
         };
     }
 
