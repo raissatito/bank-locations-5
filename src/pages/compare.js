@@ -31,7 +31,6 @@ export default function Home({ regionData }) {
   });
   const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
   const [userLocation, setUserLocation] = useState([-6.2088, 106.8456]);
-  const [selectedCardId, setSelectedCard] = useState(null);
   const [oldLocations, setOldLocations] = useState([]);
   const [newLocations, setNewLocations] = useState([]);
   const [bounds, setBounds] = useState({
@@ -111,18 +110,6 @@ export default function Home({ regionData }) {
     console.log(searchTerm, selectedProvince, selectedCity, filter);
   };
 
-  const handleSelectedCard = (coordinates, id) => {
-    setSelectedLocation(coordinates);
-    setSelectedCard(id);
-    setZoom(16);
-  };
-  const handleSelectedMarker = (coordinates) => {
-    setSelectedLocation(coordinates);
-    setZoom(16);
-  };
-  console.log("WOGH");
-  console.log(filteredData?.data);
-  console.log(data);
   return (
     <div className="h-screen w-screen flex flex-col">
       <nav
@@ -152,21 +139,16 @@ export default function Home({ regionData }) {
           <div className="basis-2/3 p-3 z-0">
             <MapComponent
               selectedLocation={selectedLocation}
-              selectedCardId={selectedCardId}
-              newLocations={filteredData?.data}
+              newLocations={newLocations}
               oldLocations={oldLocations}
               onBoundsChange={handleBoundsChange}
               isLoading={mapIsLoading}
               error={mapError}
               zoom={zoom}
-              handleSelectedMarker={handleSelectedMarker}
             />
           </div>
           <div className="basis-1/3 p-3">
-            <LocationList
-              locations={filteredData?.data}
-              onClick={handleSelectedCard}
-            />
+            <LocationList locations={filteredData?.data} />
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import Card from "./card";
 const LocationList = ({ locations, onClick }) => {
   return (
     <>
-      {locations.map((location, index) => (
+      {locations?.map((location, index) => (
         <Card
           onClick={onClick}
           coordinates={[location.latitude, location.longitude]}
