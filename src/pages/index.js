@@ -26,7 +26,7 @@ export default function Home({ regionData }) {
     keyword: "",
     province: "",
     city: "",
-    type: "all",
+    type: ["ATM (Tarik Tunai)"],
     page: 1,
   });
   const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
@@ -42,7 +42,7 @@ export default function Home({ regionData }) {
   const [zoom, setZoom] = useState(16);
 
   const { data, mapError, mapIsLoading, refetch } = useLocations(bounds.bottom, bounds.top, bounds.left, bounds.right);
-  const { data: filteredData, error, isLoading } = useFilteredLocations(filter.keyword, filter.province, filter.city, filter.type, filter.page, userLocation[0], userLocation[1]);
+  const { data: filteredData, error, isLoading } = useFilteredLocations(filter.keyword, filter.province, filter.city, '', filter.page, userLocation[0], userLocation[1]);
 
   const handleBoundsChange = (newBounds) => {
     if (newBounds.top === bounds.top && newBounds.bottom === bounds.bottom && newBounds.left === bounds.left && newBounds.right === bounds.right) {
@@ -82,7 +82,15 @@ export default function Home({ regionData }) {
   }
 
   const getLocations = (filter) => {
-    console.log(searchTerm, selectedProvince, selectedCity, filter);
+    console.log(filter)
+    setFilter(
+      {
+        keyword: searchTerm,
+        province: selectedProvince,
+        city: selectedCity,
+        page: 1,
+      }
+    );
   }
 
   return (
