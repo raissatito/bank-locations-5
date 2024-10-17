@@ -4,8 +4,8 @@ const LocationList = ({locations}) => {
 
     return (
         <>
-            {locations.map((location, index) => (
-                <Card key={index} name={location.name} address={location.address} />
+            {locations?.map((location, index) => (
+                <Card key={index} name={location.location_name} address={location.address} />
             ))}
         </>
     )

@@ -7,6 +7,7 @@ import useLocations from "../../hooks/useLocations";
 import Search from "@/components/search";
 import Filter from "@/components/filter";
 import LocationList from "@/components/locationList";
+import useFilteredLocations from "../../hooks/useFilteredLocations";
 
 
 const geistSans = localFont({
@@ -18,7 +19,15 @@ const geistSans = localFont({
 const MapComponent = dynamic(() => import("../../components/Map"), { ssr: false });
 
 export default function Home() {
+  const [filter, setFilter] = useState({
+    keyword: "",
+    province: "",
+    city: "",
+    type: "all",
+    page: 1,
+  });
   const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
+  const [userLocation, setUserLocation] = useState([-6.2088, 106.8456]);
   const [oldLocations, setOldLocations] = useState([]);
   const [newLocations, setNewLocations] = useState([]);
   const [bounds, setBounds] = useState({
@@ -30,13 +39,15 @@ export default function Home() {
   const [zoom, setZoom] = useState(16);
 
   const { data, mapError, mapIsLoading, refetch } = useLocations(bounds.bottom, bounds.top, bounds.left, bounds.right);
+  const { data: filteredData, error, isLoading } = useFilteredLocations(filter.keyword, filter.province, filter.city, filter.type, filter.page, userLocation[0], userLocation[1]);
 
   const handleBoundsChange = (newBounds) => {
     if (newBounds.top === bounds.top && newBounds.bottom === bounds.bottom && newBounds.left === bounds.left && newBounds.right === bounds.right) {
       return;
     }
     setBounds(newBounds);
-    setSelectedLocation(newBounds.center);
+    if (!!newBounds.center) setSelectedLocation(newBounds.center);
+    console.log(newBounds.center)
     setZoom(newBounds.zoom);
   };
 
@@ -44,6 +55,7 @@ export default function Home() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setSelectedLocation([position.coords.latitude, position.coords.longitude]);
+        setUserLocation([position.coords.latitude, position.coords.longitude]);
       });
     }
   }, []);
@@ -100,7 +112,7 @@ export default function Home() {
             />
           </div>
           <div className="basis-1/3 p-3">
-            <LocationList locations={locations} />
+            <LocationList locations={filteredData?.data} />
           </div>
         </div>
       </div>
