@@ -26,7 +26,7 @@ export default function Home({ regionData }) {
     keyword: "",
     province: "",
     city: "",
-    type: ["ATM (Tarik Tunai)"],
+    type: "",
     page: 1,
   });
   const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
@@ -70,6 +70,12 @@ export default function Home({ regionData }) {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (filteredData?.data && filteredData.data.length > 0) {
+      setSelectedLocation([filteredData.data[0].latitude, filteredData.data[0].longitude]);
+    }
+  }, [filteredData]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -91,6 +97,10 @@ export default function Home({ regionData }) {
         page: 1,
       }
     );
+  }
+
+  const handleCardClick = (location) => {
+    setSelectedLocation([location.latitude, location.longitude]);
   }
 
   return (
@@ -123,7 +133,10 @@ export default function Home({ regionData }) {
             />
           </div>
           <div className="basis-1/3 p-3">
-            <LocationList locations={filteredData?.data} />
+            <LocationList 
+              locations={filteredData?.data} 
+              onCardClick={handleCardClick}
+            />
           </div>
         </div>
       </div>
