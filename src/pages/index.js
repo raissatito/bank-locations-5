@@ -7,6 +7,8 @@ import useLocations from "../../hooks/useLocations";
 import Search from "@/components/search";
 import Filter from "@/components/filter";
 import LocationList from "@/components/locationList";
+import { generateProvincesCitiesJSON } from "@/services/api/region";
+import { set } from "lodash";
 
 
 const geistSans = localFont({
@@ -17,7 +19,8 @@ const geistSans = localFont({
 
 const MapComponent = dynamic(() => import("../../components/Map"), { ssr: false });
 
-export default function Home() {
+export default function Home({ regionData }) {
+
   const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
   const [oldLocations, setOldLocations] = useState([]);
   const [newLocations, setNewLocations] = useState([]);
@@ -55,20 +58,20 @@ export default function Home() {
     }
   }, [data]);
 
-  const locations = [
-    {
-      name: "Jakarta Timur - Alfamart Bambu Hitam (J960)",
-      address: "Jl. Bambu Hitam Rt. 004 Rw. 001 Cilangkap",
-    },
-    {
-      name: "Jakarta Barat - Alfamart Bambu Hitam (J960)",
-      address: "Jl. Bambu Hitam Rt. 004 Rw. 001 Cilangkap",
-    },
-    {
-      name: "Jakarta Utara - Alfamart Bambu Hitam (J960)",
-      address: "Jl. Bambu Hitam Rt. 004 Rw. 001 Cilangkap",
-    },
-  ];
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+
+  const handleSearchQuery = (searchTerm, selectedProvince, selectedCity) => {
+    console.log(searchTerm, selectedProvince, selectedCity);
+    setSearchTerm(searchTerm);
+    setSelectedProvince(selectedProvince);
+    setSelectedCity(selectedCity);
+  }
+
+  const getLocations = (filter) => {
+    console.log(searchTerm, selectedProvince, selectedCity, filter);
+  }
 
   return (
     <div className="h-screen w-screen flex flex-col">
@@ -81,10 +84,10 @@ export default function Home() {
       <div className="flex flex-col h-screen bg-white">
         <div className="flex flex-row">
           <div className="shrink basis-2/3 p-3">
-            <Search />
+            <Search regionData={regionData} onSearched={handleSearchQuery}/>
           </div>
           <div className="shrink basis-1/3 p-3">
-            <Filter />
+            <Filter onButtonClick={getLocations}/>
           </div>
         </div>
         <div className="flex flex-row h-screen">
@@ -100,10 +103,18 @@ export default function Home() {
             />
           </div>
           <div className="basis-1/3 p-3">
-            <LocationList locations={locations} />
+            {/* <LocationList locations={locations} /> */}
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const regionData = await generateProvincesCitiesJSON();
+ 
+  // Pass data to the page via props
+  return { props: { regionData } }
 }

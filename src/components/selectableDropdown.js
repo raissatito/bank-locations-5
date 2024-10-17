@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
-const SelectableDropdown = ({ kind, data }) => {
+const SelectableDropdown = ({ kind, data, onSelect }) => {
     const [isOpen, setIsOpen] = useState(false); // Manage dropdown visibility
     const [selectedItems, setSelectedItems] = useState([]); // Track selected items
-    const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4']; // Example items
 
     // Function to toggle the dropdown
     const handleFocus = () => {
@@ -13,6 +12,7 @@ const SelectableDropdown = ({ kind, data }) => {
   
     // Function to close the dropdown after a small delay (to allow item selection)
     const handleBlur = () => {
+      onSelect(selectedItems);
       setTimeout(() => setIsOpen(false), 100);
     };
   
@@ -30,7 +30,7 @@ const SelectableDropdown = ({ kind, data }) => {
         {/* Display selected items as text */}
         <div className="flex flex-row justify-between items-center py-2 px-4">
           <span className="w-full bg-zinc-100 text-black">
-            Filter
+            {kind}
           </span>
           <span>
             <ChevronDownIcon className="h-5 w-5 text-black" />
@@ -41,7 +41,7 @@ const SelectableDropdown = ({ kind, data }) => {
         {isOpen && (
         <div onFocus={handleFocus} className="absolute w-56 mt-1 bg-white rounded-box shadow-lg z-10">
             <ul className="menu p-2">
-            {items.map((item, index) => (
+            {data.map((item, index) => (
                 <li
                 key={index}
                 className="flex space-x-2 cursor-pointer"
