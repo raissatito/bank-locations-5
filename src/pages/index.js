@@ -4,6 +4,9 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import useLocations from "../../hooks/useLocations";
+import Search from "@/components/search";
+import Filter from "@/components/filter";
+import LocationList from "@/components/locationList";
 
 
 const geistSans = localFont({
@@ -52,7 +55,20 @@ export default function Home() {
     }
   }, [data]);
 
-  
+  const locations = [
+    {
+      name: "Jakarta Timur - Alfamart Bambu Hitam (J960)",
+      address: "Jl. Bambu Hitam Rt. 004 Rw. 001 Cilangkap",
+    },
+    {
+      name: "Jakarta Barat - Alfamart Bambu Hitam (J960)",
+      address: "Jl. Bambu Hitam Rt. 004 Rw. 001 Cilangkap",
+    },
+    {
+      name: "Jakarta Utara - Alfamart Bambu Hitam (J960)",
+      address: "Jl. Bambu Hitam Rt. 004 Rw. 001 Cilangkap",
+    },
+  ];
 
   return (
     <div className="h-screen w-screen flex flex-col">
@@ -62,20 +78,30 @@ export default function Home() {
         </div>
       </nav>
 
-      <div className="flex flex-1">
-        <div className="flex-1">
-          <MapComponent
-            selectedLocation={selectedLocation}
-            newLocations={newLocations}
-            oldLocations={oldLocations}
-            onBoundsChange={handleBoundsChange}
-            isLoading={mapIsLoading}
-            error={mapError}
-            zoom={zoom}
-          />
+      <div className="flex flex-col h-screen bg-white">
+        <div className="flex flex-row">
+          <div className="shrink basis-2/3 p-3">
+            <Search />
+          </div>
+          <div className="shrink basis-1/3 p-3">
+            <Filter />
+          </div>
         </div>
-        <div className="w-96">
-          <Sidebar />
+        <div className="flex flex-row h-screen">
+          <div className="basis-2/3 p-3 z-0">
+            <MapComponent
+              selectedLocation={selectedLocation}
+              newLocations={newLocations}
+              oldLocations={oldLocations}
+              onBoundsChange={handleBoundsChange}
+              isLoading={mapIsLoading}
+              error={mapError}
+              zoom={zoom}
+            />
+          </div>
+          <div className="basis-1/3 p-3">
+            <LocationList locations={locations} />
+          </div>
         </div>
       </div>
     </div>
