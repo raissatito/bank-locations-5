@@ -7,18 +7,20 @@ export async function getAll(params) {
         orderBy: [],
     };
 
+    const sanitizedKeyword = params.keyword.trim();
+    const keyword = sanitizedKeyword.split(" ").map(word => `"${word}"`).join(" & ");
     if (params.keyword) {
         query.where.OR = [
-            { location_name: { search: params.keyword, mode: "insensitive" } },
-            { address: { search: params.keyword, mode: "insensitive" } },
-            { province: { search: params.keyword, mode: "insensitive" } },
-            { city: { search: params.keyword, mode: "insensitive" } },
+            { location_name: { search: keyword, mode: "insensitive" } },
+            { address: { search: keyword, mode: "insensitive" } },
+            { province: { search: keyword, mode: "insensitive" } },
+            { city: { search: keyword, mode: "insensitive" } },
         ];
 
         query.orderBy.push({
             _relevance: {
                 fields: ["location_name", "address", "province", "city"],
-                search: params.keyword,
+                search: keyword,
                 sort: "desc",
             },
         });
@@ -32,11 +34,6 @@ export async function getAll(params) {
         query.where.city =  params.city
     }
 
-    if (params.type.length > 0) {
-        query.where.type = {
-            in: params.type,
-        };
-    }
 
     const count = await prisma.location.count(query);
 
@@ -56,8 +53,10 @@ export async function getAll(params) {
             [params.sort]: "asc" });
     }
 
-    if (params.type && params.type !== "all") {
-        query.where.type = params.type;
+    if (!!params.types) {
+        query.where.type = {
+            in: params.types.split(","),
+        };
     }
 
     if (!params.keyword && !params.province && !params.city ) {
@@ -197,6 +196,11 @@ export async function getManyByCoordinates(params) {
     const maxLat = parseFloat(params.maxLat);
     const minLong = parseFloat(params.minLong);
     const maxLong = parseFloat(params.maxLong);
+    const sanitizedKeyword = params.keyword?.trim();
+    const keyword = sanitizedKeyword?.split(" ").map(word => `"${word}"`).join(" & ");
+    const types = params.types;
+    const province = params.province;
+    const city = params.city;
 
 
     if (!minLat || !maxLat || !minLong || !maxLong) {
@@ -219,8 +223,37 @@ export async function getManyByCoordinates(params) {
         throw new Error("Longitude must be between -180 and 180");
     }
 
-    const data = await prisma.location.findMany({
+    let query = {
+        where: {},
+        orderBy: [],
+    };
+    
+    if (params.keyword) {
+        query.where.OR = [
+            { location_name: { search: keyword, mode: "insensitive" } },
+            { address: { search: keyword, mode: "insensitive" } },
+            { province: { search: keyword, mode: "insensitive" } },
+            { city: { search: keyword, mode: "insensitive" } },
+        ];
+    }
+    if (params.types) {
+        query.where.type = {
+            in: types?.split(","),
+        };
+    }
+
+    if (province) {
+        query.where.province = province;
+    }
+
+    if (city) {
+        query.where.city = city;
+    }
+
+    query = {
+        ...query,
         where: {
+            ...query.where,
             latitude: {
                 gte: minLat,
                 lte: maxLat,
@@ -230,7 +263,9 @@ export async function getManyByCoordinates(params) {
                 lte: maxLong,
             },
         },
-    });
+    };
+
+    const data = await prisma.location.findMany(query);
     return {
         data,
     };

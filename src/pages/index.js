@@ -26,7 +26,7 @@ export default function Home({ regionData }) {
     keyword: "",
     province: "",
     city: "",
-    type: ["ATM (Tarik Tunai)"],
+    types: "",
     page: 1,
   });
   const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
@@ -41,8 +41,8 @@ export default function Home({ regionData }) {
   });
   const [zoom, setZoom] = useState(16);
 
-  const { data, mapError, mapIsLoading, refetch } = useLocations(bounds.bottom, bounds.top, bounds.left, bounds.right);
-  const { data: filteredData, error, isLoading } = useFilteredLocations(filter.keyword, filter.province, filter.city, '', filter.page, userLocation[0], userLocation[1]);
+  const { data, mapError, mapIsLoading, refetch } = useLocations(bounds.bottom, bounds.top, bounds.left, bounds.right, filter.types);
+  const { data: filteredData, error, isLoading } = useFilteredLocations(filter.keyword, filter.province, filter.city, filter.types, filter.page, userLocation[0], userLocation[1]);
 
   const handleBoundsChange = (newBounds) => {
     if (newBounds.top === bounds.top && newBounds.bottom === bounds.bottom && newBounds.left === bounds.left && newBounds.right === bounds.right) {
@@ -50,7 +50,6 @@ export default function Home({ regionData }) {
     }
     setBounds(newBounds);
     if (!!newBounds.center) setSelectedLocation(newBounds.center);
-    console.log(newBounds.center)
     setZoom(newBounds.zoom);
   };
 
@@ -70,12 +69,17 @@ export default function Home({ regionData }) {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (filteredData?.data && filteredData.data.length > 0) {
+      setSelectedLocation([filteredData.data[0].latitude, filteredData.data[0].longitude]);
+    }
+  }, [filteredData]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
 
   const handleSearchQuery = (searchTerm, selectedProvince, selectedCity) => {
-    console.log(searchTerm, selectedProvince, selectedCity);
     setSearchTerm(searchTerm);
     setSelectedProvince(selectedProvince);
     setSelectedCity(selectedCity);
@@ -89,8 +93,13 @@ export default function Home({ regionData }) {
         province: selectedProvince,
         city: selectedCity,
         page: 1,
+        types: filter
       }
     );
+  }
+
+  const handleCardClick = (location) => {
+    setSelectedLocation([location.latitude, location.longitude]);
   }
 
   return (
@@ -123,7 +132,10 @@ export default function Home({ regionData }) {
             />
           </div>
           <div className="basis-1/3 p-3">
-            <LocationList locations={filteredData?.data} />
+            <LocationList 
+              locations={filteredData?.data} 
+              onCardClick={handleCardClick}
+            />
           </div>
         </div>
       </div>
