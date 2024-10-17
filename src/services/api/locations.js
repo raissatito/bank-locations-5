@@ -25,7 +25,17 @@ export async function getAll(params) {
     }
 
     if (params.province) {
-        query.where.province = { search: params.province, mode: "insensitive" };
+        query.where.province =  params.province
+    }
+
+    if (params.city) {
+        query.where.city =  params.city
+    }
+
+    if (params.type.length > 0) {
+        query.where.type = {
+            in: params.type,
+        };
     }
 
     const count = await prisma.location.count(query);
