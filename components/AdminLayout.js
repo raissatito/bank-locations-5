@@ -23,8 +23,8 @@ export default function AdminLayout({ children }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <aside className="w-64 bg-gray-800 text-white p-6">
+    <div className="min-h-screen ">
+      <aside className="w-64 bg-gray-800 p-6">
         <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
         <nav>
           <ul>
@@ -35,7 +35,7 @@ export default function AdminLayout({ children }) {
             </li>
             <li className="mt-8">
               <button
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded"
                 onClick={() => {
                   signOut({ callbackUrl: "/auth/signin" });
                 }}
