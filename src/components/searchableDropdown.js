@@ -55,7 +55,7 @@ export default function SearchableDropdown({ kind, data, change, onSelected, sel
                 <input
                     type="text"
                     placeholder={kind}
-                    className="w-full py-2 px-4 rounded-md bg-zinc-100 text-black outline-none"
+                    className="w-full py-2 px-2 rounded-md bg-zinc-100 text-black outline-none"
                     value={searchTerm !== "" ? searchTerm : selectedItem}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onFocus={handleFocus}

@@ -10,6 +10,7 @@ import LocationList from "@/components/locationList";
 import useFilteredLocations from "../../hooks/useFilteredLocations";
 import { generateProvincesCitiesJSON } from "@/services/api/region";
 import { set } from "lodash";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -148,6 +149,7 @@ export default function Home({ regionData }) {
     setSelectedLocation(coordinates);
     setSelectedCard(id);
     setZoom(17);
+    setIsSheetOpen(false);
   };
   const handleSelectedMarker = (coordinates) => {
     setSelectedLocation(coordinates);
@@ -167,8 +169,34 @@ export default function Home({ regionData }) {
     ? newLocations
     : filteredData?.data;
 
+  const [isSheetOpen, setIsSheetOpen] = useState(true);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1024px)'); // lg breakpoint
+
+    // Function to handle changes in screen size
+    const handleScreenChange = (e) => {
+      if (e.matches) {
+        setIsSheetOpen(true);  // Screen is lg or larger
+      } else {
+        setIsSheetOpen(false); // Screen is smaller than lg
+      }
+    };
+
+    // Add event listener to respond to screen size changes
+    mediaQuery.addEventListener('change', handleScreenChange);
+
+    // Call the handler on initial load
+    handleScreenChange(mediaQuery);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      mediaQuery.removeEventListener('change', handleScreenChange);
+    };
+  }, []);
+
   return (
-    <div className="relative h-screen w-screen">
+    <div className="relative h-screen w-screen overflow-hidden">
       {/* Navbar (no longer overlapping) */}
       <nav className="navbar text-primary-content px-4 py-2 w-full z-10" style={{ backgroundColor: '#dc3545' }}>
         <div className="flex items-center gap-4">
@@ -193,19 +221,27 @@ export default function Home({ regionData }) {
       </div>
 
       {/* Search and Filter (floating over the map) */}
-      <div className="absolute top-16 left-0 w-full flex flex-row p-4 z-10">
-        <div className="shrink basis-2/3 mr-4 ml-10">
+      <div className="absolute top-16 left-0 w-full flex flex-col lg:flex-row p-4 z-10">
+        <div className="lg:basis-2/3 lg:mr-4 mb-2 lg:mb-0">
           <Search regionData={regionData} onSearched={handleSearchQuery} filter={filter} />
         </div>
-        <div className="shrink basis-1/3">
-          <Filter onButtonClick={getLocations} onCategorySelected={handleCategorySelected} style={{ zIndex: 11}} />
+        <div className=" lg:basis-1/3">
+          <Filter onButtonClick={getLocations} onCategorySelected={handleCategorySelected} />
         </div>
       </div>
 
       {/* Location list (floating over the map on the right) */}
-      <div className="bg-white bg-opacity-50 absolute top-44 right-0 w-1/3 h-2/3 overflow-y-auto p-3 z-10 mr-2 rounded-2xl"
-        style={{ zIndex: 9}}
-      >
+      <div className={`absolute flex flex-col inset-x-0 bottom-0 lg:top-44 lg:right-0 lg:inset-x-auto lg:bottom-auto lg:w-1/3 ${isSheetOpen ? 'h-2/3' : 'h-1/6'} p-3 z-0 lg:mr-2 items-center`}>
+        <button className="bg-white text-black w-1/6 rounded-2xl p-2 mb-2 block lg:hidden" onClick={() => setIsSheetOpen(!isSheetOpen)}>
+          <div className="flex justify-center items-center">
+            {isSheetOpen ? (
+              <ChevronUp size={18} />
+            ) : (
+              <ChevronDown size={18} />
+            )}
+          </div>
+        </button>
+        <div className="bg-white bg-opacity-70 lg:bg-opacity-50 rounded-2xl overflow-y-auto min-h-full min-w-full">
           <div className="rounded-2xl p-3 h-full">
               {locationsToDisplay && locationsToDisplay.length > 0 ? (
                   <LocationList
@@ -218,6 +254,7 @@ export default function Home({ regionData }) {
                   </div>
               )}
           </div>
+        </div>
       </div>
     </div>
   );
