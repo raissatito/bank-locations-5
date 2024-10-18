@@ -1,3 +1,4 @@
+import { Search } from "lucide-react";
 import prisma from "../../../lib/prisma";
 import assert from "node:assert";
 
@@ -15,14 +16,6 @@ export async function getAll(params) {
             { province: { contains: keyword, mode: "insensitive" } },
             { city: { contains: keyword, mode: "insensitive" } },
         ];
-
-        query.orderBy.push({
-            _relevance: {
-                fields: ["location_name", "address", "province", "city"],
-                search: keyword,
-                sort: "desc",
-            },
-        });
     }
 
     if (params.province) {
@@ -32,9 +25,12 @@ export async function getAll(params) {
     if (params.city) {
         query.where.city =  params.city
     }
-
+    if (params.category) {
+        query.where.category = params.category;
+    }
 
     const count = await prisma.location.count(query);
+
 
     if (params.size) {
         query.take = parseInt(params.size);
@@ -46,20 +42,19 @@ export async function getAll(params) {
         query.skip =
             (parseInt(params.page) - 1) * (params.size ? parseInt(params.size) : 10);
     }
+    
 
-    if (params.sort && params.sort !== "relevance") {
-        query.orderBy.push({
-            [params.sort]: "asc" });
-    }
-
-    if (!!params.types) {
-        query.where.type = {
-            in: params.types.split(","),
+    if (params.keyword) {
+        const sanitizedKeyword = params.keyword.trim();
+        const formattedKeyword = sanitizedKeyword.split(" ").map(word => `"${word}"`).join(" & ");
+        query.orderBy = {
+            _relevance: {
+                fields: ["province", "city", "location_name", "address"],
+                search: formattedKeyword,
+                sort: "asc",
+            },
         };
-    }
-    if (params.category) {
-        query.where.category = params.category;
-    }
+    }    
 
     if (!params.keyword && !params.province && !params.city ) {
         let lat = params.lat;
