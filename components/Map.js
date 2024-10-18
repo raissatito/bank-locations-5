@@ -7,10 +7,10 @@ import { debounce } from "lodash";
 
 const branchIcon = new L.Icon({
   iconUrl:
-    "https://static-00.iconduck.com/assets.00/map-marker-icon-171x256-xkl73sge.png",
-  iconSize: [20, 30],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
+    "/bank.png",
+    iconSize: [30, 38],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
 });
 
 const atmIcon = new L.Icon({

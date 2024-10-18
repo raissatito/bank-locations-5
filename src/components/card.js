@@ -1,14 +1,23 @@
-const Card = ({ onClick, coordinates, id, name, address }) => {
+import Image from 'next/image'
+
+const Card = ({ onClick, coordinates, id, name, address, category }) => {
   return (
-    <>
-      <div
-        onClick={() => onClick(coordinates, id)}
-        className="flex flex-col bg-zinc-100 rounded-2xl p-3 mb-3"
-      >
-        <p className="text-2xl text-black">{name}</p>
-        <p className="text-base text-black">{address}</p>
+    <div className="flex flex-row justify-between bg-zinc-100 rounded-2xl p-3 mb-3">
+      <div onClick={() => onClick(coordinates, id)} className="flex flex-col">
+        <p className="text-2xl text-black line-clamp-2">{name}</p>
+        <p className="text-base text-black line-clamp-1">{address}</p>
       </div>
-    </>
+      <div className="flex flex-col justify-center items-center">
+        <Image
+          src={category === "ATM" ? "/atm.png" : "/bank.png"}
+          height={100}
+          width={100}
+          className="max-w-10"
+        />
+        <p className='text-xs text-black'>{category === "ATM" ? "ATM" : "Cabang"}
+        </p>
+      </div>
+    </div>
   );
 };
 

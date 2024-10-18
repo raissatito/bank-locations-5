@@ -20,7 +20,7 @@ const Filter = ({onButtonClick}) => {
                 <SelectableDropdown kind="Kategori" data={data} onSelect={handleFilter}/>
             </div>
             <div className="basis-2/3 h-full">
-                <button onClick={() => handleTransferData()} className="bg-black h-full w-full text-white rounded-full px-4 py-1">Search</button>
+                <button onClick={() => handleTransferData()} className="bg-[#dc3545] h-full w-full text-white rounded-full px-4 py-1">Search</button>
             </div>
         </div>
     );
