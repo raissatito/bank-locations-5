@@ -7,14 +7,13 @@ export async function getAll(params) {
         orderBy: [],
     };
 
-    const sanitizedKeyword = params.keyword.trim();
-    const keyword = sanitizedKeyword.split(" ").map(word => `"${word}"`).join(" & ");
+    const keyword = params.keyword;
     if (params.keyword) {
         query.where.OR = [
-            { location_name: { search: keyword, mode: "insensitive" } },
-            { address: { search: keyword, mode: "insensitive" } },
-            { province: { search: keyword, mode: "insensitive" } },
-            { city: { search: keyword, mode: "insensitive" } },
+            { location_name: { contains: keyword, mode: "insensitive" } },
+            { address: { contains: keyword, mode: "insensitive" } },
+            { province: { contains: keyword, mode: "insensitive" } },
+            { city: { contains: keyword, mode: "insensitive" } },
         ];
 
         query.orderBy.push({
@@ -199,8 +198,7 @@ export async function getManyByCoordinates(params) {
     const maxLat = parseFloat(params.maxLat);
     const minLong = parseFloat(params.minLong);
     const maxLong = parseFloat(params.maxLong);
-    const sanitizedKeyword = params.keyword?.trim();
-    const keyword = sanitizedKeyword?.split(" ").map(word => `"${word}"`).join(" & ");
+    const keyword = params.keyword
     const types = params.types;
     const province = params.province;
     const city = params.city;
@@ -233,10 +231,10 @@ export async function getManyByCoordinates(params) {
     
     if (params.keyword) {
         query.where.OR = [
-            { location_name: { search: keyword, mode: "insensitive" } },
-            { address: { search: keyword, mode: "insensitive" } },
-            { province: { search: keyword, mode: "insensitive" } },
-            { city: { search: keyword, mode: "insensitive" } },
+            { location_name: { contains: keyword, mode: "insensitive" } },
+            { address: { contains: keyword, mode: "insensitive" } },
+            { province: { contains: keyword, mode: "insensitive" } },
+            { city: { contains: keyword, mode: "insensitive" } },
         ];
     }
     if (params.types) {
