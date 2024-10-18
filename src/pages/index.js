@@ -177,7 +177,7 @@ export default function Home({ regionData }) {
 
       {/* Search and Filter (floating over the map) */}
       <div className="absolute top-16 left-0 w-full flex flex-row p-4 z-10">
-        <div className="shrink basis-2/3">
+        <div className="shrink basis-2/3 mr-4">
           <Search regionData={regionData} onSearched={handleSearchQuery} filter={filter} />
         </div>
         <div className="shrink basis-1/3">
@@ -186,8 +186,10 @@ export default function Home({ regionData }) {
       </div>
 
       {/* Location list (floating over the map on the right) */}
-      <div className="absolute top-36 right-0 w-1/3 h-[calc(100vh-36px)] overflow-y-auto p-3 bg-white bg-opacity-80 z-0">
-        <LocationList locations={filteredData?.data} onClick={handleSelectedCard} />
+      <div className="absolute top-44 right-0 w-1/3 h-2/3 overflow-y-auto p-3 z-0 mr-2 rounded-2xl">
+        <div className="bg-white bg-opacity-80 rounded-2xl p-3">
+          <LocationList locations={isFilterEmpty() ? newLocations : filteredData?.data} onClick={handleSelectedCard} />
+        </div>
       </div>
     </div>
   );

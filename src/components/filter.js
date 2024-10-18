@@ -23,7 +23,7 @@ const Filter = ({onCategorySelected, onButtonClick}) => {
                 <SearchableDropdown kind="Kategori" data={data} onSelected={handleFilter} selected={filter} />
             </div>
             <div className="basis-2/3 h-full">
-                <button onClick={() => handleResetFilter()} className="bg-black h-full w-full text-white rounded-full px-4 py-1">Reset Filter</button>
+                <button onClick={() => handleResetFilter()} className="bg-[#dc3545] h-full w-full text-white rounded-full px-4 py-1">Reset Filter</button>
             </div>
         </div>
     );
