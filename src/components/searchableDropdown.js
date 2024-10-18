@@ -2,10 +2,15 @@ import { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { on } from 'events';
 
-const SearchableDropdown = ({kind, data, onSelected}) => {
+const SearchableDropdown = ({kind, data, change, onSelected}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedItem, setSelectedItem] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        setSearchTerm('')
+        setSelectedItem('')
+    }, [change])
   
     // Function to filter items based on the search term
     let filteredItems = data.filter((item) =>
@@ -20,7 +25,7 @@ const SearchableDropdown = ({kind, data, onSelected}) => {
     // Function to handle input blur (close the dropdown after a small delay)
     const handleBlur = () => {
       // Delay hiding to allow selecting options
-      setTimeout(() => setIsOpen(false), 100);
+      setTimeout(() => setIsOpen(false), 300);
       filteredItems = data
       setSearchTerm('')
     };

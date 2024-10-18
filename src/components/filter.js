@@ -3,7 +3,7 @@ import SearchableDropdown from "./searchableDropdown";
 import SelectableDropdown from "./selectableDropdown";
 
 const Filter = ({onButtonClick}) => {
-    const data = ["ATM (Tarik Tunai)", "CDM (Setor Tunai)", "TST (Tarik & Setor Tunai)", "Main Branch (KC)", "Digital Lounge (KCP)", "Sub Branch (KCP)", "Kiosk", "Syariah Main Branch (KCS)", "Kantor Fungsional Syariah (KFS)", "Syariah Main Branch (KCS)", "Weekend Banking"];
+    const data = ["ATM (Tarik Tunai)", "CDM (Setor Tunai)", "TST (Tarik dan Setor Tunai)", "Main Branch (KC)", "Digital Lounge (KCP)", "Sub Branch (KCP)", "Kiosk", "Syariah Main Branch (KCS)", "Kantor Fungsional Syariah (KFS)", "Syariah Main Branch (KCS)", "Weekend Banking"];
     const [filter, setFilter] = useState([]);
 
     const handleFilter = (selectedItems) => {

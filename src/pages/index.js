@@ -26,7 +26,7 @@ export default function Home({ regionData }) {
     keyword: "",
     province: "",
     city: "",
-    type: "all",
+    types: "",
     page: 1,
   });
   const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
@@ -46,7 +46,8 @@ export default function Home({ regionData }) {
     bounds.bottom,
     bounds.top,
     bounds.left,
-    bounds.right
+    bounds.right,
+    filter.types
   );
   const {
     data: filteredData,
@@ -56,7 +57,7 @@ export default function Home({ regionData }) {
     filter.keyword,
     filter.province,
     filter.city,
-    filter.type,
+    filter.types,
     filter.page,
     userLocation[0],
     userLocation[1]
@@ -73,7 +74,6 @@ export default function Home({ regionData }) {
     }
     setBounds(newBounds);
     if (!!newBounds.center) setSelectedLocation(newBounds.center);
-    console.log(newBounds.center);
     setZoom(newBounds.zoom);
   };
 
@@ -96,19 +96,34 @@ export default function Home({ regionData }) {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (filteredData?.data && filteredData.data.length > 0) {
+      setSelectedLocation([
+        filteredData.data[0].latitude,
+        filteredData.data[0].longitude,
+      ]);
+    }
+  }, [filteredData]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
 
   const handleSearchQuery = (searchTerm, selectedProvince, selectedCity) => {
-    console.log(searchTerm, selectedProvince, selectedCity);
     setSearchTerm(searchTerm);
     setSelectedProvince(selectedProvince);
     setSelectedCity(selectedCity);
   };
 
   const getLocations = (filter) => {
-    console.log(searchTerm, selectedProvince, selectedCity, filter);
+    console.log(filter);
+    setFilter({
+      keyword: searchTerm,
+      province: selectedProvince,
+      city: selectedCity,
+      page: 1,
+      types: filter,
+    });
   };
 
   const handleSelectedCard = (coordinates, id) => {
@@ -120,9 +135,10 @@ export default function Home({ regionData }) {
     setSelectedLocation(coordinates);
     setZoom(16);
   };
-  console.log("WOGH");
-  console.log(filteredData?.data);
-  console.log(data);
+
+  const isFilterEmpty = () => {
+    return !filter.keyword && !filter.province && !filter.city;
+  };
   return (
     <div className="h-screen w-screen flex flex-col">
       <nav
@@ -153,7 +169,7 @@ export default function Home({ regionData }) {
             <MapComponent
               selectedLocation={selectedLocation}
               selectedCardId={selectedCardId}
-              newLocations={filteredData?.data}
+              newLocations={isFilterEmpty() ? newLocations : filteredData?.data}
               oldLocations={oldLocations}
               onBoundsChange={handleBoundsChange}
               isLoading={mapIsLoading}
