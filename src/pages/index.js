@@ -29,8 +29,8 @@ export default function Home({ regionData }) {
     category: "",
     page: 1,
   });
-  const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
-  const [userLocation, setUserLocation] = useState([-6.2088, 106.8456]);
+  const [selectedLocation, setSelectedLocation] = useState([-6.2733215, 106.7247771]);
+  const [userLocation, setUserLocation] = useState([-6.2733215, 106.7247771]);
   const [selectedCardId, setSelectedCard] = useState(null);
   const [oldLocations, setOldLocations] = useState([]);
   const [newLocations, setNewLocations] = useState([]);
