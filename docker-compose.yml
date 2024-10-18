@@ -1,0 +1,28 @@
+services:
+    app:
+        build: .
+        ports:
+            - "3000:3000"
+        volumes:
+            - .:/app
+            - /app/node_modules
+        environment:
+            - DATABASE_URL=postgresql://postgres:postgres@db:5432/bank_locations?schema=public
+            - NEXTAUTH_SECRET="njVI34lZbARCPZ+Tlftyuo++U4NoSHim3MbhsbniOlw="
+        depends_on:
+            - db
+        command: sh -c "npm run db-reset && npm run dev"
+
+    db:
+        image: postgres
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=bank_locations
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+volumes:
+    postgres_data:
