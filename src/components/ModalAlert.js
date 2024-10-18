@@ -1,7 +1,11 @@
 const ModalAlert = ({ text, type }) => {
+  let modal_type;
+  if (type == "success") {
+    modal_type = "alert-success";
+  }
   return (
     <div className="w-[50%] top-2 absolute">
-      <div role="alert" className={`alert alert-${type}`}>
+      <div role="alert" className={`alert ${modal_type}`}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6 shrink-0 stroke-current"

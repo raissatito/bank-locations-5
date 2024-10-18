@@ -1,14 +1,25 @@
 import AdminLayout from "../../../components/AdminLayout";
 import Image from "next/image";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { generateProvincesCitiesJSON } from "@/services/api/region";
 import { useEffect, useState } from "react";
 import Search from "@/components/search";
 import Filter from "@/components/filter";
 import LocationList from "@/components/locationList";
-import useFilteredLocations from "../../../hooks/useFilteredLocations";
+import useDashboardLocations from "../../../hooks/useDashboardLocations";
+import DashboardList from "@/components/DashboardList";
+import BankBranchForm from "@/components/bank-branch-form";
+import { getCategories } from "@/services/api/categories";
+import { getTypes } from "@/services/api/categories";
+import useCreateBranch from "../../../hooks/useCreateBranch";
+import ModalAlert from "@/components/ModalAlert";
 
-export default function Dashboard({ regionData }) {
+export default function Dashboard({
+  regionData,
+  category_list,
+  branch_type_list,
+}) {
+  const { data: session } = useSession();
   const [filter, setFilter] = useState({
     keyword: "",
     province: "",
@@ -16,67 +27,120 @@ export default function Dashboard({ regionData }) {
     type: "all",
     page: 1,
   });
-  const [userLocation, setUserLocation] = useState([-6.2088, 106.8456]);
-
   const {
     data: filteredData,
     error,
     isLoading,
-  } = useFilteredLocations(
+  } = useDashboardLocations(
     filter.keyword,
     filter.province,
     filter.city,
     filter.type,
-    filter.page,
-    userLocation[0],
-    userLocation[1]
+    filter.page
   );
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const { postData, post_data, loading, err } = useCreateBranch();
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isCreateSuccess, setIsCreateSuccess] = useState(false);
 
   const handleSearchQuery = (searchTerm, selectedProvince, selectedCity) => {
-    console.log(searchTerm, selectedProvince, selectedCity);
-    setSearchTerm(searchTerm);
-    setSelectedProvince(selectedProvince);
-    setSelectedCity(selectedCity);
+    setFilter({
+      ...filter,
+      keyword: searchTerm,
+      province: selectedProvince,
+      city: selectedCity,
+    });
+  };
+
+  const handleCategorySelected = (selectedItem) => {
+    setFilter({ ...filter, category: selectedItem });
   };
 
   const getLocations = (filter) => {
-    console.log(searchTerm, selectedProvince, selectedCity, filter);
+    setFilter({
+      ...filter,
+      category: "",
+      keyword: "",
+      province: "",
+      city: "",
+    });
+  };
+  const handleFormSubmit = async (value) => {
+    await postData(value); // Call the postData function from usePost hook
+    setModalOpen(false);
+    setIsCreateSuccess(true);
+    console.log(post_data);
+  };
+
+  // Function to open the modal
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  useEffect(() => {
+    if (isCreateSuccess) {
+      const timer = setTimeout(() => {
+        setIsCreateSuccess(false); // Hide the alert after 3 seconds
+      }, 3000); // 3 seconds
+
+      return () => clearTimeout(timer); // Cleanup the timer
+    }
+  }, [isCreateSuccess]);
+
+  const isFilterEmpty = () => {
+    return !filter.keyword && !filter.province && !filter.city;
   };
 
   return (
     <AdminLayout>
-      <div className="h-screen w-screen flex flex-col">
-        <nav
-          className="navbar text-primary-content px-4 py-2"
-          style={{ backgroundColor: "#dc3545" }}
-        >
-          <div className="flex items-center gap-4">
-            <Image
-              src="https://www.cimbniaga.co.id/content/dam/cimb/logo/Logo%20CIMB%20white.svg"
-              alt="Logo"
-              width={200}
-              height={100}
-            />
-          </div>
-        </nav>
+      {isCreateSuccess && <ModalAlert text={"Success!"} type={"success"} />}
+      {isModalOpen && (
+        <div className="absolute grid w-full z-10">
+          <BankBranchForm
+            onSubmit={handleFormSubmit}
+            province_cities_list={regionData}
+            category_list={category_list}
+            branch_type_list={branch_type_list}
+            closeModal={closeModal}
+          />
+        </div>
+      )}
 
+      <div className="h-screen flex flex-col">
         <div className="flex flex-col h-screen bg-white">
           <div className="flex flex-row">
-            <div className="shrink basis-2/3 p-3">
-              <Search regionData={regionData} onSearched={handleSearchQuery} />
+            <div className="">
+              <Search
+                regionData={regionData}
+                onSearched={handleSearchQuery}
+                filter={filter}
+              />
             </div>
-            <div className="shrink basis-1/3 p-3">
-              <Filter onButtonClick={getLocations} />
+            <div className="">
+              <Filter
+                onCategorySelected={handleCategorySelected}
+                onButtonClick={getLocations}
+              />
+            </div>
+            <div>
+              <button className="btn btn-accent" onClick={openModal}>
+                Add New Branch
+              </button>
             </div>
           </div>
-          <div className="flex flex-row h-screen">
-            <div className="basis-1/3 p-3">
-              <LocationList
+          <div className="">
+            <div className="">
+              <DashboardList
                 locations={filteredData?.data}
+                regionData={regionData}
+                category_list={category_list}
+                branch_type_list={branch_type_list}
                 // onClick={handleSelectedCard}
               />
             </div>
@@ -99,7 +163,10 @@ export async function getServerSideProps(context) {
     };
   }
 
+  const category_list = await getCategories();
+  const branch_type_list = await getTypes();
+
   return {
-    props: { session, regionData },
+    props: { session, regionData, category_list, branch_type_list },
   };
 }

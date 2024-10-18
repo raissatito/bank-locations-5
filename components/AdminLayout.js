@@ -1,6 +1,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function AdminLayout({ children }) {
@@ -25,28 +26,22 @@ export default function AdminLayout({ children }) {
   return (
     <div className="min-h-screen ">
       <aside className="w-64 bg-gray-800 p-6">
-        <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
-        <nav>
-          <ul>
-            <li className="mb-4">
-              <Link href="/admin/dashboard">
-                <p className="hover:text-gray-300">Dashboard</p>
-              </Link>
-            </li>
-            <li className="mt-8">
-              <button
-                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded"
-                onClick={() => {
-                  signOut({ callbackUrl: "/auth/signin" });
-                }}
-              >
-                Sign Out
-              </button>
-            </li>
-          </ul>
+        <nav
+          className="navbar text-primary-content px-4 py-2"
+          style={{ backgroundColor: "#dc3545" }}
+        >
+          <div className="flex items-center gap-4">
+            <Image
+              src="https://www.cimbniaga.co.id/content/dam/cimb/logo/Logo%20CIMB%20white.svg"
+              alt="Logo"
+              width={200}
+              height={100}
+            />
+            <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
+          </div>
         </nav>
       </aside>
-      <main className="flex-1 p-8">{children}</main>
+      <main className="p-8">{children}</main>
     </div>
   );
 }
