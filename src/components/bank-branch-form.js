@@ -59,6 +59,7 @@ export default function BankBranchForm({
   province_cities_list,
   category_list,
   branch_type_list,
+  closeModal,
 }) {
   // assert that all required props are provided
   assert(province_cities_list, "province_cities_list is required");
@@ -123,7 +124,10 @@ export default function BankBranchForm({
   }, [selectedProvince, province_cities_list, form]);
 
   return (
-    <Card className="w-full max-w-3xl mx-auto min-w-[800px] absolute z-10">
+    <Card className="w-full max-w-3xl mx-auto min-w-[800px] z-10">
+      <button className="btn " onClick={closeModal}>
+        ✕
+      </button>
       <CardHeader>
         <CardTitle>
           {initialValues.location_name ? "Update" : "Add"} Bank Branch Location

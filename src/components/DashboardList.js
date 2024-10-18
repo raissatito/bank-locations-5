@@ -74,16 +74,14 @@ const DashboardList = ({
       {locations?.map((location, index) => (
         <>
           {isUpdateModalOpen && currentLocation?.id === location.id && (
-            <div className="absolute z-10 bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-              <button className="top-4 right-4" onClick={closeUpdateModal}>
-                ✕
-              </button>
+            <div className="absolute grid w-full z-10">
               <BankBranchForm
                 initialValues={location}
                 onSubmit={handleFormSubmit}
                 province_cities_list={regionData}
                 category_list={category_list}
                 branch_type_list={branch_type_list}
+                closeModal={closeUpdateModal}
               />
             </div>
           )}

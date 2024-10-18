@@ -27,8 +27,6 @@ export default function Dashboard({
     type: "all",
     page: 1,
   });
-  const [userLocation, setUserLocation] = useState([-6.2088, 106.8456]);
-
   const {
     data: filteredData,
     error,
@@ -43,21 +41,30 @@ export default function Dashboard({
 
   const { postData, post_data, loading, err } = useCreateBranch();
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
 
   const handleSearchQuery = (searchTerm, selectedProvince, selectedCity) => {
-    console.log(searchTerm, selectedProvince, selectedCity);
-    setSearchTerm(searchTerm);
-    setSelectedProvince(selectedProvince);
-    setSelectedCity(selectedCity);
+    setFilter({
+      ...filter,
+      keyword: searchTerm,
+      province: selectedProvince,
+      city: selectedCity,
+    });
+  };
+
+  const handleCategorySelected = (selectedItem) => {
+    setFilter({ ...filter, category: selectedItem });
   };
 
   const getLocations = (filter) => {
-    console.log(searchTerm, selectedProvince, selectedCity, filter);
+    setFilter({
+      ...filter,
+      category: "",
+      keyword: "",
+      province: "",
+      city: "",
+    });
   };
   const handleFormSubmit = async (value) => {
     await postData(value); // Call the postData function from usePost hook
@@ -85,19 +92,22 @@ export default function Dashboard({
       return () => clearTimeout(timer); // Cleanup the timer
     }
   }, [isCreateSuccess]);
+
+  const isFilterEmpty = () => {
+    return !filter.keyword && !filter.province && !filter.city;
+  };
+
   return (
     <AdminLayout>
       {isCreateSuccess && <ModalAlert text={"Success!"} type={"success"} />}
       {isModalOpen && (
-        <div className="absolute z-10 bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-          <button className="top-4 right-4" onClick={closeModal}>
-            ✕
-          </button>
+        <div className="absolute grid w-full z-10">
           <BankBranchForm
             onSubmit={handleFormSubmit}
             province_cities_list={regionData}
             category_list={category_list}
             branch_type_list={branch_type_list}
+            closeModal={closeModal}
           />
         </div>
       )}
@@ -106,10 +116,17 @@ export default function Dashboard({
         <div className="flex flex-col h-screen bg-white">
           <div className="flex flex-row">
             <div className="">
-              <Search regionData={regionData} onSearched={handleSearchQuery} />
+              <Search
+                regionData={regionData}
+                onSearched={handleSearchQuery}
+                filter={filter}
+              />
             </div>
             <div className="">
-              <Filter onButtonClick={getLocations} />
+              <Filter
+                onCategorySelected={handleCategorySelected}
+                onButtonClick={getLocations}
+              />
             </div>
             <div>
               <button className="btn btn-accent" onClick={openModal}>
