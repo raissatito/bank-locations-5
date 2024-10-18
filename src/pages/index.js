@@ -10,6 +10,7 @@ import LocationList from "@/components/locationList";
 import useFilteredLocations from "../../hooks/useFilteredLocations";
 import { generateProvincesCitiesJSON } from "@/services/api/region";
 import { set } from "lodash";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -136,6 +137,7 @@ export default function Home({ regionData }) {
     setSelectedLocation(coordinates);
     setSelectedCard(id);
     setZoom(16);
+    setIsSheetOpen(false);
   };
   const handleSelectedMarker = (coordinates) => {
     setSelectedLocation(coordinates);
@@ -150,6 +152,36 @@ export default function Home({ regionData }) {
     console.log("MASHOK");
     setFilter({ keyword: "", province: "", city: "", types: "", page: 1 });
   };
+
+  const locationsToDisplay = isFilterEmpty()
+    ? newLocations
+    : filteredData?.data;
+
+  const [isSheetOpen, setIsSheetOpen] = useState(true);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1024px)'); // lg breakpoint
+
+    // Function to handle changes in screen size
+    const handleScreenChange = (e) => {
+      if (e.matches) {
+        setIsSheetOpen(true);  // Screen is lg or larger
+      } else {
+        setIsSheetOpen(false); // Screen is smaller than lg
+      }
+    };
+
+    // Add event listener to respond to screen size changes
+    mediaQuery.addEventListener('change', handleScreenChange);
+
+    // Call the handler on initial load
+    handleScreenChange(mediaQuery);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      mediaQuery.removeEventListener('change', handleScreenChange);
+    };
+  }, []);
 
   return (
     <div className="relative h-screen w-screen">
@@ -177,7 +209,7 @@ export default function Home({ regionData }) {
 
       {/* Search and Filter (floating over the map) */}
       <div className="absolute top-16 left-0 w-full flex flex-col lg:flex-row p-4 z-10">
-        <div className=" lg:basis-2/3 lg:mr-4 mb-2 lg:mb-0">
+        <div className="lg:basis-2/3 lg:mr-4 mb-2 lg:mb-0">
           <Search regionData={regionData} onSearched={handleSearchQuery} filter={filter} />
         </div>
         <div className=" lg:basis-1/3">
@@ -186,9 +218,29 @@ export default function Home({ regionData }) {
       </div>
 
       {/* Location list (floating over the map on the right) */}
-      <div className="absolute top-44 right-0 w-1/3 h-2/3 overflow-y-auto p-3 z-0 mr-2 rounded-2xl">
-        <div className="bg-white bg-opacity-80 rounded-2xl p-3">
-          <LocationList locations={isFilterEmpty() ? newLocations : filteredData?.data} onClick={handleSelectedCard} />
+      <div className={`absolute flex flex-col inset-x-0 bottom-0 lg:top-44 lg:right-0 lg:inset-x-auto lg:bottom-auto lg:w-1/3 ${isSheetOpen ? 'h-2/3' : 'h-1/6'} p-3 z-0 lg:mr-2 items-center`}>
+        <button className="bg-white text-black w-1/6 rounded-2xl p-2 mb-2 block lg:hidden" onClick={() => setIsSheetOpen(!isSheetOpen)}>
+          <div className="flex justify-center items-center">
+            {isSheetOpen ? (
+              <ChevronUp size={18} />
+            ) : (
+              <ChevronDown size={18} />
+            )}
+          </div>
+        </button>
+        <div className="bg-white bg-opacity-70 lg:bg-opacity-50 rounded-2xl overflow-y-auto">
+          <div className="rounded-2xl p-3 h-full">
+              {locationsToDisplay && locationsToDisplay.length > 0 ? (
+                  <LocationList
+                      locations={locationsToDisplay}
+                      onClick={handleSelectedCard}
+                  />
+              ) : (
+                  <div className="text-center text-lg text-gray-500 h-full flex items-center justify-center">
+                      No locations found
+                  </div>
+              )}
+          </div>
         </div>
       </div>
     </div>

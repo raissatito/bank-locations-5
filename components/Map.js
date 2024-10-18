@@ -103,7 +103,8 @@ const MapComponent = ({
     <MapContainer
       center={selectedLocation}
       zoom={zoom}
-      // minZoom={12}
+      minZoom={12}
+      zoomControl={false}
       style={{ height: "100%", width: "100%" }}
     >
       <TileLayer
