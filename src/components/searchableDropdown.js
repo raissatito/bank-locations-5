@@ -25,9 +25,11 @@ const SearchableDropdown = ({kind, data, change, onSelected}) => {
     // Function to handle input blur (close the dropdown after a small delay)
     const handleBlur = () => {
       // Delay hiding to allow selecting options
-      setTimeout(() => setIsOpen(false), 300);
-      filteredItems = data
-      setSearchTerm('')
+      setTimeout(() => {
+        setIsOpen(false)
+        filteredItems = data
+        setSearchTerm('')
+      }, 250);
     };
 
     const handleSelection = (item) => {
@@ -42,7 +44,7 @@ const SearchableDropdown = ({kind, data, change, onSelected}) => {
             type="text"
             placeholder={kind}
             className="w-full bg-zinc-100 text-black outline-none"
-            value={searchTerm !== '' ? searchTerm : selectedItem}
+            value={(searchTerm !== '' || isOpen == true) ? searchTerm : selectedItem}
             onChange={(e) => {setSearchTerm(e.target.value)}}
             onBlur={handleBlur}
           />
@@ -52,7 +54,7 @@ const SearchableDropdown = ({kind, data, change, onSelected}) => {
         </div>
   
         {isOpen && (
-          <div className="absolute w-56 mt-1 bg-base-100 rounded-box shadow-lg z-10">
+          <div className="absolute w-1/6 mt-1 bg-base-100 rounded-box shadow-lg z-10">
             <ul className="menu p-2">
               <li>
                   <a onClick={() => handleSelection("")}>----</a>
@@ -65,7 +67,7 @@ const SearchableDropdown = ({kind, data, change, onSelected}) => {
                 ))
               ) : (
                 <li>
-                  <a>No Province found</a>
+                  <a>Tidak ditemukan {kind}</a>
                 </li>
               )}
             </ul>
