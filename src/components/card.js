@@ -18,7 +18,7 @@ const Card = ({
       <div onClick={() => onClick(coordinates, id)} className="flex flex-col">
         <p className="text-2xl text-black line-clamp-2">{name}</p>
         <p className="text-base text-black line-clamp-1">{address}</p>
-        {isAllowed && <p>{formattedDistance} Km</p>}
+        {isAllowed && <p className="text-black">{formattedDistance} Km</p>}
       </div>
       <div className="flex flex-col justify-center items-center">
         <Image
