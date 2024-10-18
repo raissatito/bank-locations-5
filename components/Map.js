@@ -6,11 +6,10 @@ import L, { marker } from "leaflet";
 import { debounce } from "lodash";
 
 const branchIcon = new L.Icon({
-  iconUrl:
-    "/bank.png",
-    iconSize: [30, 38],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
+  iconUrl: "/bank.png",
+  iconSize: [30, 38],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
 });
 
 const atmIcon = new L.Icon({
@@ -21,7 +20,8 @@ const atmIcon = new L.Icon({
 });
 
 const userIcon = new L.Icon({
-  iconUrl: "https://cdn.pixabay.com/photo/2014/04/03/10/03/google-309739_640.png",
+  iconUrl:
+    "https://cdn.pixabay.com/photo/2014/04/03/10/03/google-309739_640.png",
   iconSize: [24, 38],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -88,6 +88,7 @@ const MapComponent = ({
   zoom,
   handleSelectedMarker,
   userPosition,
+  isAllowed,
 }) => {
   const markerRef = useRef({});
   console.log("ZOOM");
@@ -106,7 +107,8 @@ const MapComponent = ({
   }
   const locationsToRender =
     newLocations.length > 0 ? newLocations : oldLocations;
-
+  console.log("IS ALLOWRD KAH");
+  console.log(isAllowed);
   return (
     <MapContainer
       center={selectedLocation}
@@ -114,17 +116,13 @@ const MapComponent = ({
       minZoom={12}
       zoomControl={false}
       style={{ height: "100%", width: "100%" }}
-      zoomControl={false}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      <Marker
-        position={userPosition}
-        icon={userIcon}
-      />
+      {isAllowed && <Marker position={userPosition} icon={userIcon} />}
 
       {locationsToRender.map((location) => {
         if (location.category === "ATM") {
@@ -189,7 +187,15 @@ const MapComponent = ({
                 {location.city}, {location.province}
                 <br />
                 <br />
-                <button className="btn btn-primary btn-xs">
+                <button
+                  onClick={() => {
+                    window.open(
+                      `http://maps.google.com/maps?q=${location.latitude},${location.longitude}`,
+                      "_blank"
+                    );
+                  }}
+                  className="btn btn-primary btn-xs"
+                >
                   Go to Google Map
                 </button>
               </Popup>
