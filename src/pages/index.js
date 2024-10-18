@@ -124,6 +124,7 @@ export default function Home({ regionData }) {
       province: selectedProvince,
       city: selectedCity,
     });
+    setZoom(16);
   };
 
   const getLocations = () => {
@@ -140,6 +141,7 @@ export default function Home({ regionData }) {
 
   const handleCategorySelected = (selectedItem) => {
     setFilter({ ...filter, category: selectedItem });
+    setZoom(16);
   }
 
   const handleSelectedCard = (coordinates, id) => {
