@@ -20,6 +20,13 @@ const atmIcon = new L.Icon({
   popupAnchor: [1, -34],
 });
 
+const userIcon = new L.Icon({
+  iconUrl: "https://cdn.pixabay.com/photo/2014/04/03/10/03/google-309739_640.png",
+  iconSize: [24, 38],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
+
 const ChangeView = ({ coords, zoom }) => {
   const map = useMap();
   useEffect(() => {
@@ -80,6 +87,7 @@ const MapComponent = ({
   error,
   zoom,
   handleSelectedMarker,
+  userPosition,
 }) => {
   const markerRef = useRef({});
   console.log("ZOOM");
@@ -103,12 +111,19 @@ const MapComponent = ({
     <MapContainer
       center={selectedLocation}
       zoom={zoom}
-      // minZoom={12}
+      minZoom={12}
+      zoomControl={false}
       style={{ height: "100%", width: "100%" }}
+      zoomControl={false}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      <Marker
+        position={userPosition}
+        icon={userIcon}
       />
 
       {locationsToRender.map((location) => {
