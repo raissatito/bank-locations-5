@@ -11,6 +11,8 @@ const LocationList = ({ locations, onClick }) => {
           key={index}
           name={location.location_name}
           address={location.address}
+          category={location.category}
+          className="bg-zinc-200 cursor-pointer"
         />
       ))}
     </>
