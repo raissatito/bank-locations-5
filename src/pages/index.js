@@ -30,8 +30,8 @@ export default function Home({ regionData }) {
     category: "",
     page: 1,
   });
-  const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
-  const [userLocation, setUserLocation] = useState([-6.2088, 106.8456]);
+  const [selectedLocation, setSelectedLocation] = useState([-6.2733215, 106.7247771]);
+  const [userLocation, setUserLocation] = useState([-6.2733215, 106.7247771]);
   const [selectedCardId, setSelectedCard] = useState(null);
   const [oldLocations, setOldLocations] = useState([]);
   const [newLocations, setNewLocations] = useState([]);
@@ -70,6 +70,14 @@ export default function Home({ regionData }) {
       newBounds.bottom === bounds.bottom &&
       newBounds.left === bounds.left &&
       newBounds.right === bounds.right
+    ) {
+      return;
+    }
+    if (
+      newBounds.top < bounds.top &&
+      newBounds.bottom > bounds.bottom &&
+      newBounds.left > bounds.left &&
+      newBounds.right < bounds.right
     ) {
       return;
     }
@@ -117,6 +125,7 @@ export default function Home({ regionData }) {
       province: selectedProvince,
       city: selectedCity,
     });
+    setZoom(16);
   };
 
   const getLocations = () => {
@@ -127,21 +136,24 @@ export default function Home({ regionData }) {
       province: '',
       city: '',
     });
+    setSelectedLocation(userLocation);
+    setZoom(16);
   };
 
   const handleCategorySelected = (selectedItem) => {
     setFilter({ ...filter, category: selectedItem });
+    setZoom(16);
   }
 
   const handleSelectedCard = (coordinates, id) => {
     setSelectedLocation(coordinates);
     setSelectedCard(id);
-    setZoom(16);
+    setZoom(17);
     setIsSheetOpen(false);
   };
   const handleSelectedMarker = (coordinates) => {
     setSelectedLocation(coordinates);
-    setZoom(16);
+    setZoom(17);
   };
 
   const isFilterEmpty = () => {
@@ -184,7 +196,7 @@ export default function Home({ regionData }) {
   }, []);
 
   return (
-    <div className="relative h-screen w-screen">
+    <div className="relative h-screen w-screen overflow-hidden">
       {/* Navbar (no longer overlapping) */}
       <nav className="navbar text-primary-content px-4 py-2 w-full z-10" style={{ backgroundColor: '#dc3545' }}>
         <div className="flex items-center gap-4">
@@ -204,6 +216,7 @@ export default function Home({ regionData }) {
           error={mapError}
           zoom={zoom}
           handleSelectedMarker={handleSelectedMarker}
+          userPosition={userLocation}
         />
       </div>
 
@@ -228,7 +241,7 @@ export default function Home({ regionData }) {
             )}
           </div>
         </button>
-        <div className="bg-white bg-opacity-70 lg:bg-opacity-50 rounded-2xl overflow-y-auto">
+        <div className="bg-white bg-opacity-70 lg:bg-opacity-50 rounded-2xl overflow-y-auto min-h-full min-w-full">
           <div className="rounded-2xl p-3 h-full">
               {locationsToDisplay && locationsToDisplay.length > 0 ? (
                   <LocationList
