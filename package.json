@@ -1,34 +1,49 @@
 {
-  "name": "bank-locations-5",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@heroicons/react": "^2.1.5",
-    "@prisma/client": "^5.21.0",
-    "@supabase/supabase-js": "^2.45.4",
-    "bank-locations-5": "file:",
-    "bcryptjs": "^2.4.3",
-    "leaflet": "^1.9.4",
-    "leaflet-defaulticon-compatibility": "^0.1.2",
-    "lodash": "^4.17.21",
-    "next": "14.2.15",
-    "next-auth": "^4.24.8",
-    "node": "^20.18.0",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-leaflet": "^4.2.1",
-    "swr": "^2.2.5"
-  },
-  "devDependencies": {
-    "daisyui": "^4.12.13",
-    "postcss": "^8",
-    "prisma": "^5.21.0",
-    "tailwindcss": "^3.4.1"
-  }
+    "name": "bank-locations-5",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "db-reset": "prisma db push --force-reset && prisma db seed"
+    },
+    "prisma": {
+        "seed": "./prisma/seed.sh"
+    },
+    "dependencies": {
+        "@hookform/resolvers": "^3.9.0",
+        "@radix-ui/react-icons": "^1.3.0",
+        "@radix-ui/react-label": "^2.1.0",
+        "@radix-ui/react-select": "^2.1.2",
+        "@radix-ui/react-slot": "^1.1.0",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.1",
+        "@heroicons/react": "^2.1.5",
+        "@prisma/client": "^5.21.0",
+        "@supabase/supabase-js": "^2.45.4",
+        "bank-locations-5": "file:",
+        "bcryptjs": "^2.4.3",
+        "leaflet": "^1.9.4",
+        "leaflet-defaulticon-compatibility": "^0.1.2",
+        "lodash": "^4.17.21",
+        "next": "14.2.15",
+        "next-auth": "^4.24.8",
+        "node": "^20.18.0",
+        "react": "^18",
+        "react-dom": "^18",
+        "react-icons": "^5.3.0",
+        "react-leaflet": "^4.2.1",
+        "swr": "^2.2.5",
+        "tailwind-merge": "^2.5.4",
+        "tailwindcss-animate": "^1.0.7",
+        "zod": "^3.23.8"
+    },
+    "devDependencies": {
+        "daisyui": "^4.12.13",
+        "postcss": "^8",
+        "prisma": "^5.21.0",
+        "tailwindcss": "^3.4.1"
+    }
 }
