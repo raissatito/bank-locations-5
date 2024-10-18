@@ -112,7 +112,7 @@ const MapComponent = ({
       />
 
       {locationsToRender.map((location) => {
-        if (location.type === "ATM (Tarik Tunai)") {
+        if (location.category === "ATM") {
           return (
             <Marker
               key={location.id}
