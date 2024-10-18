@@ -1,28 +1,20 @@
-import Card from "./card"
+import Card from "./card";
 
-const LocationList = ({locations, onCardClick} ) => {
+const LocationList = ({ locations, onClick }) => {
+  return (
+    <>
+      {locations?.map((location, index) => (
+        <Card
+          onClick={onClick}
+          coordinates={[location.latitude, location.longitude]}
+          id={location.id}
+          key={index}
+          name={location.location_name}
+          address={location.address}
+        />
+      ))}
+    </>
+  );
+};
 
-    const handleCardClick = (location) => {
-        console.log(location)
-        onCardClick(location)
-    }
-    return (
-        <>
-            {locations?.map((location, index) => (
-                <div 
-                    onClick={() => handleCardClick(location)}
-                    className="cursor-pointer"
-                >
-                    <Card
-                        key={index} 
-                        name={location.location_name} 
-                        address={location.address}
-                        
-                        />
-                </div>
-                ))}
-        </>
-    )
-}
-
-export default LocationList
+export default LocationList;
