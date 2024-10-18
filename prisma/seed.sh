@@ -16,5 +16,6 @@ fi
 
 # Run the psql command to import the CSV data
 psql $DATABASE_URL -c "\copy \"Location\"(location_name, address, province, city, latitude, longitude, type, category) from 'prisma/seed/bank_data.csv' with (FORMAT csv, HEADER true)"
+psql $DATABASE_URL -c "INSERT INTO \"User\" (email, password, \"fullName\") VALUES ('admin@cimb.com', '\$2a\$10\$iWRD6G./XwmdKOkrCTjzzeWx3qAW5cXNiUyNF0GbG/ZCptarGA32K', 'Admin');"
 
 echo "Data import completed"
