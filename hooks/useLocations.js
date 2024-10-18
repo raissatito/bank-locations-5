@@ -1,9 +1,9 @@
 import useSWR, { mutate } from "swr";
 import { fetcher } from "../utils/fetcher"; 
 
-const useLocations = (minLat, maxLat, minLong, maxLong, types) => {
+const useLocations = (minLat, maxLat, minLong, maxLong, category) => {
   const { data, error, isLoading } = useSWR(
-    `/api/locations-by-coordinates?minLat=${minLat}&maxLat=${maxLat}&minLong=${minLong}&maxLong=${maxLong}&types=${types}`,
+    `/api/locations-by-coordinates?minLat=${minLat}&maxLat=${maxLat}&minLong=${minLong}&maxLong=${maxLong}&category=${category}`,
     fetcher
   );
 

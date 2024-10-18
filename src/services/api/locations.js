@@ -58,6 +58,9 @@ export async function getAll(params) {
             in: params.types.split(","),
         };
     }
+    if (params.category) {
+        query.where.category = params.category;
+    }
 
     if (!params.keyword && !params.province && !params.city ) {
         let lat = params.lat;
@@ -240,6 +243,10 @@ export async function getManyByCoordinates(params) {
         query.where.type = {
             in: types?.split(","),
         };
+    }
+
+    if (params.category) {
+        query.where.category = params.category;
     }
 
     if (province) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { on } from 'events';
 
-const SearchableDropdown = ({kind, data, change, onSelected}) => {
+const SearchableDropdown = ({kind, data, change, onSelected, selected}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedItem, setSelectedItem] = useState('');
     const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +11,10 @@ const SearchableDropdown = ({kind, data, change, onSelected}) => {
         setSearchTerm('')
         setSelectedItem('')
     }, [change])
+
+    useEffect(() => {
+        setSelectedItem(selected)
+    }, [selected])
   
     // Function to filter items based on the search term
     let filteredItems = data.filter((item) =>
