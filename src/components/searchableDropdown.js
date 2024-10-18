@@ -1,9 +1,9 @@
 "use client";
-
 import React, { useEffect, useState, useRef } from "react";
 import { ChevronDownIcon } from "lucide-react";
 
-export default function SearchableDropdown({ kind, data, change, onSelected }) {
+
+export default function SearchableDropdown({ kind, data, change, onSelected, selected }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedItem, setSelectedItem] = useState("");
     const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +29,10 @@ export default function SearchableDropdown({ kind, data, change, onSelected }) {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    useEffect(() => {
+        setSelectedItem(selected)
+    }, [selected])
 
     const filteredItems = data.filter((item) =>
         item.toLowerCase().includes(searchTerm.toLowerCase())

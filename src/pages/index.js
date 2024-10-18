@@ -26,7 +26,7 @@ export default function Home({ regionData }) {
     keyword: "",
     province: "",
     city: "",
-    types: "",
+    category: "",
     page: 1,
   });
   const [selectedLocation, setSelectedLocation] = useState([-6.2088, 106.8456]);
@@ -47,7 +47,7 @@ export default function Home({ regionData }) {
     bounds.top,
     bounds.left,
     bounds.right,
-    filter.types
+    filter.category
   );
   const {
     data: filteredData,
@@ -57,7 +57,7 @@ export default function Home({ regionData }) {
     filter.keyword,
     filter.province,
     filter.city,
-    filter.types,
+    filter.category,
     filter.page,
     userLocation[0],
     userLocation[1]
@@ -110,21 +110,27 @@ export default function Home({ regionData }) {
   const [selectedCity, setSelectedCity] = useState("");
 
   const handleSearchQuery = (searchTerm, selectedProvince, selectedCity) => {
-    setSearchTerm(searchTerm);
-    setSelectedProvince(selectedProvince);
-    setSelectedCity(selectedCity);
-  };
-
-  const getLocations = (filter) => {
-    console.log(filter);
     setFilter({
+      ...filter,
       keyword: searchTerm,
       province: selectedProvince,
       city: selectedCity,
-      page: 1,
-      types: filter,
     });
   };
+
+  const getLocations = () => {
+    setFilter({
+      ...filter,
+      category: '',
+      keyword: '',
+      province: '',
+      city: '',
+    });
+  };
+
+  const handleCategorySelected = (selectedItem) => {
+    setFilter({ ...filter, category: selectedItem });
+  }
 
   const handleSelectedCard = (coordinates, id) => {
     setSelectedLocation(coordinates);
@@ -156,9 +162,6 @@ export default function Home({ regionData }) {
 
       {/* Map component taking full screen but pushed below the navbar */}
       <div className="absolute top-16 left-0 w-full h-[calc(100vh-64px)] z-0">
-        <btn onClick={resetFilter} className="btn">
-          Reset Filter
-        </btn>
         <MapComponent
           selectedLocation={selectedLocation}
           selectedCardId={selectedCardId}
@@ -175,10 +178,10 @@ export default function Home({ regionData }) {
       {/* Search and Filter (floating over the map) */}
       <div className="absolute top-16 left-0 w-full flex flex-row p-4 z-10">
         <div className="shrink basis-2/3">
-          <Search regionData={regionData} onSearched={handleSearchQuery} />
+          <Search regionData={regionData} onSearched={handleSearchQuery} filter={filter} />
         </div>
         <div className="shrink basis-1/3">
-          <Filter onButtonClick={getLocations} />
+          <Filter onButtonClick={getLocations} onCategorySelected={handleCategorySelected} />
         </div>
       </div>
 
