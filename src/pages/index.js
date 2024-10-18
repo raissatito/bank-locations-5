@@ -176,11 +176,11 @@ export default function Home({ regionData }) {
       </div>
 
       {/* Search and Filter (floating over the map) */}
-      <div className="absolute top-16 left-0 w-full flex flex-row p-4 z-10">
-        <div className="shrink basis-2/3 mr-4">
+      <div className="absolute top-16 left-0 w-full flex flex-col lg:flex-row p-4 z-10">
+        <div className=" lg:basis-2/3 lg:mr-4 mb-2 lg:mb-0">
           <Search regionData={regionData} onSearched={handleSearchQuery} filter={filter} />
         </div>
-        <div className="shrink basis-1/3">
+        <div className=" lg:basis-1/3">
           <Filter onButtonClick={getLocations} onCategorySelected={handleCategorySelected} />
         </div>
       </div>
