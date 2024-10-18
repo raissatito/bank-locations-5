@@ -1,44 +1,63 @@
-"use client";
-import { useState, useEffect } from "react";
-import CreateBankBranchFormComponent from "@/components/createForm";
-import ModalAlert from "@/components/ModalAlert";
+import BankBranchForm from "@/components/bank-branch-form";
+import { getCategories, getTypes } from "@/services/api/categories";
+import { generateProvincesCitiesJSON } from "@/services/api/region";
 
-export default function CreateBankBranch() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+export async function getServerSideProps() {
+  const province_cities_list = await generateProvincesCitiesJSON();
+  const category_list = await getCategories();
+  const branch_type_list = await getTypes();
 
-  useEffect(() => {
-    if (isSuccess) {
-      const timer = setTimeout(() => {
-        setIsSuccess(false); // Hide the alert after 3 seconds
-      }, 3000); // 3 seconds
+  return {
+    props: {
+      province_cities_list,
+      category_list,
+      branch_type_list,
+    },
+  };
+}
 
-      return () => clearTimeout(timer); // Cleanup the timer
-    }
-  }, [isSuccess]);
+export default function Create({
+  province_cities_list,
+  category_list,
+  branch_type_list,
+}) {
+  let oldBranch = {
+    type: "ATM",
+    category: "ATM",
+    location_name: "Bank Branch 1",
+    address: "Jl. Jendral Sudirman No. 1",
+    province: "BALI",
+    city: "BADUNG",
+    latitude: -6.2087634,
+    longitude: 106.845599,
+  };
+
+  function handleFormSubmit(values) {
+    console.log(values);
+  }
 
   return (
-    <>
-      <div className="flex justify-center bg-gray-100">
-        {isSuccess && (
-          <ModalAlert text={"Success Creating New Branch!"} type={"success"} />
-        )}
-      </div>
+    <div
+      className={`grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
+    >
+      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+        <p>Create New Branch</p>
+        <BankBranchForm
+          onSubmit={handleFormSubmit}
+          province_cities_list={province_cities_list}
+          category_list={category_list}
+          branch_type_list={branch_type_list}
+        />
 
-      <div className="flex items-center justify-center min-h-screen bg-gray-100 text-black">
-        <button className="btn btn-outline" onClick={() => setIsOpen(true)}>
-          Create New Bank Branch
-        </button>
-        {isOpen && (
-          <CreateBankBranchFormComponent
-            onClose={() => setIsOpen(false)}
-            handleIsSuccess={() => {
-              console.log("Masuk sini rek");
-              setIsSuccess(true);
-            }}
-          />
-        )}
-      </div>
-    </>
+        <p>Update Branch</p>
+        <BankBranchForm
+          initialValues={oldBranch}
+          onSubmit={handleFormSubmit}
+          province_cities_list={province_cities_list}
+          category_list={category_list}
+          branch_type_list={branch_type_list}
+        />
+      </main>
+    </div>
   );
 }

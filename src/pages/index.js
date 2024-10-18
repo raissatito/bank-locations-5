@@ -139,6 +139,11 @@ export default function Home({ regionData }) {
   const isFilterEmpty = () => {
     return !filter.keyword && !filter.province && !filter.city;
   };
+
+  const resetFilter = () => {
+    console.log("MASHOK");
+    setFilter({ keyword: "", province: "", city: "", types: "", page: 1 });
+  };
   return (
     <div className="h-screen w-screen flex flex-col">
       <nav
@@ -166,6 +171,9 @@ export default function Home({ regionData }) {
         </div>
         <div className="flex flex-row h-screen">
           <div className="basis-2/3 p-3 z-0">
+            <btn onClick={resetFilter} className="btn">
+              Reset Filter
+            </btn>
             <MapComponent
               selectedLocation={selectedLocation}
               selectedCardId={selectedCardId}
