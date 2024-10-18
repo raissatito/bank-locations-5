@@ -20,12 +20,13 @@ export default function Dashboard({
   branch_type_list,
 }) {
   const { data: session } = useSession();
+  const [dataPage, setPage] = useState(1);
+  const [displayedData, setDisplayedData] = useState(null);
   const [filter, setFilter] = useState({
     keyword: "",
     province: "",
     city: "",
     type: "all",
-    page: 1,
   });
   const {
     data: filteredData,
@@ -36,13 +37,29 @@ export default function Dashboard({
     filter.province,
     filter.city,
     filter.type,
-    filter.page
+    dataPage
   );
+  useEffect(() => {
+    console.log("MASOK");
+    console.log(filteredData);
+  }, [filteredData]);
 
   const { postData, post_data, loading, err } = useCreateBranch();
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
+
+  const nextPage = () => {
+    if (filteredData && filteredData.data && filteredData.data.length > 0) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (dataPage > 1) {
+      setPage((prev) => prev - 1);
+    }
+  };
 
   const handleSearchQuery = (searchTerm, selectedProvince, selectedCity) => {
     setFilter({

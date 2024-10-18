@@ -42,6 +42,8 @@ export async function getAll(params) {
       (parseInt(params.page) - 1) * (params.size ? parseInt(params.size) : 10);
   }
 
+  console.log(params.page);
+
   if (params.keyword) {
     const sanitizedKeyword = params.keyword.trim();
     const formattedKeyword = sanitizedKeyword
