@@ -72,6 +72,14 @@ export default function Home({ regionData }) {
     ) {
       return;
     }
+    if (
+      newBounds.top < bounds.top &&
+      newBounds.bottom > bounds.bottom &&
+      newBounds.left > bounds.left &&
+      newBounds.right < bounds.right
+    ) {
+      return;
+    }
     setBounds(newBounds);
     if (!!newBounds.center) setSelectedLocation(newBounds.center);
     setZoom(newBounds.zoom);
@@ -126,6 +134,8 @@ export default function Home({ regionData }) {
       province: '',
       city: '',
     });
+    setSelectedLocation(userLocation);
+    setZoom(16);
   };
 
   const handleCategorySelected = (selectedItem) => {
@@ -135,11 +145,11 @@ export default function Home({ regionData }) {
   const handleSelectedCard = (coordinates, id) => {
     setSelectedLocation(coordinates);
     setSelectedCard(id);
-    setZoom(16);
+    setZoom(17);
   };
   const handleSelectedMarker = (coordinates) => {
     setSelectedLocation(coordinates);
-    setZoom(16);
+    setZoom(17);
   };
 
   const isFilterEmpty = () => {
@@ -176,6 +186,7 @@ export default function Home({ regionData }) {
           error={mapError}
           zoom={zoom}
           handleSelectedMarker={handleSelectedMarker}
+          userPosition={userLocation}
         />
       </div>
 
@@ -185,12 +196,14 @@ export default function Home({ regionData }) {
           <Search regionData={regionData} onSearched={handleSearchQuery} filter={filter} />
         </div>
         <div className="shrink basis-1/3">
-          <Filter onButtonClick={getLocations} onCategorySelected={handleCategorySelected} />
+          <Filter onButtonClick={getLocations} onCategorySelected={handleCategorySelected} style={{ zIndex: 11}} />
         </div>
       </div>
 
       {/* Location list (floating over the map on the right) */}
-      <div className="bg-white bg-opacity-50 absolute top-44 right-0 w-1/3 h-2/3 overflow-y-auto p-3 z-10 mr-2 rounded-2xl">
+      <div className="bg-white bg-opacity-50 absolute top-44 right-0 w-1/3 h-2/3 overflow-y-auto p-3 z-10 mr-2 rounded-2xl"
+        style={{ zIndex: 9}}
+      >
           <div className="rounded-2xl p-3 h-full">
               {locationsToDisplay && locationsToDisplay.length > 0 ? (
                   <LocationList
